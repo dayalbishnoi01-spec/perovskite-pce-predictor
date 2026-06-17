@@ -267,25 +267,29 @@
                     <div class="field">
                         <label>B-Ion (Metal)</label>
                         <select id="B_Ion">
-                            <option value="Pb">Pb — Lead</option>
-                            <option value="Sn">Sn — Tin</option>
-                            <option value="Bi">Bi — Bismuth</option>
-                        </select>
+    <option value="Pb">Pb — Lead</option>
+    <option value="Sn">Sn — Tin</option>
+    <option value="Pb; Sn">Pb; Sn — Lead-Tin Mix</option>
+    <option value="Bi">Bi — Bismuth</option>
+</select>
                     </div>
                     <div class="field">
                         <label>A-Ion (Cation)</label>
                         <select id="A_Ion">
                             <option value="MA">MA — Methylammonium</option>
-                            <option value="FA">FA — Formamidinium</option>
-                            <option value="Cs">Cs — Caesium</option>
+    <option value="FA">FA — Formamidinium</option>
+    <option value="Cs">Cs — Caesium</option>
+    <option value="FA; MA">FA; MA — Mixed</option>
+    <option value="Cs; FA; MA">Cs; FA; MA — Triple Cation</option>
+    <option value="Cs; FA">Cs; FA — Mixed</option>
                         </select>
                     </div>
                     <div class="field">
                         <label>C-Ion (Halide)</label>
                         <select id="C_Ion">
                             <option value="I">I — Iodide</option>
-                            <option value="Br">Br — Bromide</option>
-                            <option value="Cl">Cl — Chloride</option>
+    <option value="Br">Br — Bromide</option>
+    <option value="Br; I">Br; I — Mixed</option>
                         </select>
                     </div>
                 </div>
@@ -305,20 +309,26 @@
                         <label>HTL (Hole Transport Layer)</label>
                         <select id="HTL">
                             <option value="Spiro-MeOTAD">Spiro-MeOTAD</option>
-                            <option value="PEDOT:PSS">PEDOT:PSS</option>
-                            <option value="PTAA">PTAA</option>
-                            <option value="CuSCN">CuSCN</option>
-                            <option value="none">None</option>
+    <option value="Spiro-OMeTAD">Spiro-OMeTAD</option>
+    <option value="PEDOT:PSS">PEDOT:PSS</option>
+    <option value="PTAA">PTAA</option>
+    <option value="CuSCN">CuSCN</option>
+    <option value="P3HT">P3HT</option>
+    <option value="none">None</option>
                         </select>
                     </div>
                     <div class="field">
                         <label>ETL (Electron Transport Layer)</label>
                         <select id="ETL">
                             <option value="TiO2-c">TiO2-c</option>
-                            <option value="SnO2-c">SnO2-c</option>
-                            <option value="PCBM-60">PCBM-60</option>
-                            <option value="ZnO-np">ZnO-np</option>
-                            <option value="none">None</option>
+    <option value="TiO2-c | TiO2-mp">TiO2-c | TiO2-mp</option>
+    <option value="SnO2-c">SnO2-c</option>
+    <option value="SnO2-np">SnO2-np</option>
+    <option value="PCBM-60">PCBM-60</option>
+    <option value="PCBM-60 | BCP">PCBM-60 | BCP</option>
+    <option value="C60 | BCP">C60 | BCP</option>
+    <option value="ZnO-np">ZnO-np</option>
+    <option value="none">None</option>
                         </select>
                     </div>
                 </div>
@@ -330,37 +340,48 @@
                 <div class="fields">
                     <div class="field">
                         <label>Backcontact</label>
-                        <select id="Backcontact">
-                            <option value="Au">Au — Gold</option>
-                            <option value="Ag">Ag — Silver</option>
-                            <option value="Al">Al — Aluminium</option>
-                            <option value="Carbon">Carbon</option>
+                       <option value="Au">Au — Gold</option>
+    <option value="Ag">Ag — Silver</option>
+    <option value="Al">Al — Aluminium</option>
+    <option value="Carbon">Carbon</option>
+    <option value="Cu">Cu — Copper</option>
+    <option value="MoO3 | Ag">MoO3 | Ag</option>
+    <option value="ITO | Ag">ITO | Ag</option>
+    <option value="Ca | Al">Ca | Al</option>
                         </select>
                     </div>
                     <div class="field">
                         <label>Solvents</label>
                         <select id="Solvents">
-                            <option value="DMF">DMF</option>
-                            <option value="DMSO">DMSO</option>
-                            <option value="GBL">GBL</option>
-                            <option value="DMF; DMSO">DMF + DMSO</option>
+                           <option value="DMF">DMF</option>
+    <option value="DMF; DMSO">DMF; DMSO</option>
+    <option value="DMSO; GBL">DMSO; GBL</option>
+    <option value="DMF >> IPA">DMF >> IPA</option>
+    <option value="GBL">GBL</option>
+    <option value="DMSO">DMSO</option>
                         </select>
                     </div>
                     <div class="field">
                         <label>Synthesis Atmosphere</label>
                         <select id="Synth_Atm">
                             <option value="N2">N₂</option>
-                            <option value="Air">Air</option>
-                            <option value="Ar">Ar</option>
-                            <option value="Vacuum">Vacuum</option>
+    <option value="Air">Air</option>
+    <option value="N2 >> N2">N₂ >> N₂</option>
+    <option value="Vacuum">Vacuum</option>
+    <option value="Ar">Ar</option>
+    <option value="Dry air">Dry Air</option>
                         </select>
                     </div>
                     <div class="field">
                         <label>Deposition Procedure</label>
                         <select id="Dep_Procedure">
                             <option value="Spin-coating">Spin-coating</option>
-                            <option value="Co-evaporation">Co-evaporation</option>
-                            <option value="Evaporation">Evaporation</option>
+    <option value="Spin-coating >> Spin-coating">Spin-coating >> Spin-coating</option>
+    <option value="Co-evaporation">Co-evaporation</option>
+    <option value="Evaporation">Evaporation</option>
+    <option value="Doctor blading">Doctor Blading</option>
+    <option value="Slot-die coating">Slot-die Coating</option>
+    <option value="Spin-coating >> CBD">Spin-coating >> CBD</option>
                         </select>
                     </div>
                     <div class="field-row">
