@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perovskite PCE Predictor</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #eaf4fb; color: #1a2a3a; }
+
+        /* HERO */
+        .hero {
+            background: linear-gradient(135deg, #0d3a5c 0%, #1565a0 60%, #1e90c8 100%);
+            padding: 56px 24px 48px;
+            text-align: center;
+        }
+        .hero h1 { font-size: 2.2rem; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
+        .hero h1 span { color: #7dd3f7; }
+        .hero p { margin: 10px auto 0; color: #b0d8f0; font-size: 0.95rem; max-width: 520px; line-height: 1.6; }
+        .badges { margin-top: 18px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .badge {
+            padding: 5px 16px; border-radius: 20px;
+            background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25);
+            color: #fff; font-size: 0.82rem; font-weight: 600;
+        }
+
+        /* NAV TABS */
+        .tabs {
+            display: flex; justify-content: center; gap: 0;
+            background: #fff; border-bottom: 2px solid #c8e6f5;
+            position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 2px 8px rgba(30,100,160,0.08);
+        }
+        .tab {
+            padding: 14px 28px; font-size: 0.88rem; font-weight: 600;
+            color: #5a8aaa; cursor: pointer; border-bottom: 3px solid transparent;
+            transition: all 0.2s; text-decoration: none;
+        }
+        .tab:hover { color: #1565a0; }
+        .tab.active { color: #1565a0; border-bottom-color: #1565a0; }
+
+        /* SECTIONS */
+        .section { max-width: 960px; margin: 44px auto; padding: 0 24px; }
+        .section h2 {
+            font-size: 1.25rem; color: #1565a0; margin-bottom: 20px;
+            padding-bottom: 10px; border-bottom: 2px solid #c8e6f5;
+        }
+
+        /* ABOUT */
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+        .about-text p { color: #3a5a70; line-height: 1.8; font-size: 0.93rem; margin-bottom: 10px; }
+
+        /* PEROVSKITE DIAGRAM */
+        .diagram-box {
+            background: #fff; border: 1px solid #c8e6f5; border-radius: 16px;
+            padding: 20px; text-align: center;
+            box-shadow: 0 2px 12px rgba(30,100,160,0.08);
+        }
+        .diagram-box img { width: 100%; border-radius: 8px; }
+        .diagram-box p { font-size: 0.78rem; color: #7aaabb; margin-top: 10px; }
+
+        /* CARDS */
+        .cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-top: 20px; }
+        .card {
+            background: #fff; border: 1px solid #c8e6f5; border-radius: 12px;
+            padding: 20px; text-align: center; box-shadow: 0 2px 8px rgba(30,100,160,0.06);
+        }
+        .card .icon { font-size: 1.8rem; margin-bottom: 8px; }
+        .card h3 { color: #1a4a6b; font-size: 0.9rem; margin-bottom: 5px; }
+        .card p { color: #5a7a8a; font-size: 0.8rem; line-height: 1.5; }
+
+        /* STATS */
+        .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+        .stat {
+            background: #fff; border: 1px solid #c8e6f5; border-radius: 12px;
+            padding: 20px; text-align: center; box-shadow: 0 2px 8px rgba(30,100,160,0.06);
+        }
+        .stat .num { font-size: 1.8rem; font-weight: 800; color: #1565a0; }
+        .stat .lbl { font-size: 0.78rem; color: #7aaabb; margin-top: 4px; }
+
+        /* DATA SOURCE */
+        .source-box {
+            background: #fff; border: 1px solid #c8e6f5; border-radius: 14px;
+            padding: 26px; box-shadow: 0 2px 12px rgba(30,100,160,0.07);
+        }
+        .source-box h3 { color: #1565a0; margin-bottom: 10px; }
+        .source-box p { color: #3a5a70; line-height: 1.8; font-size: 0.92rem; margin-bottom: 8px; }
+
+        /* PLOTS */
+        .plots { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        .plot-card {
+            background: #fff; border: 1px solid #c8e6f5; border-radius: 14px;
+            overflow: hidden; box-shadow: 0 2px 10px rgba(30,100,160,0.07);
+        }
+        .plot-card img { width: 100%; display: block; }
+        .plot-caption { padding: 10px 14px; font-size: 0.8rem; color: #5a8aaa; background: #f5fbff; }
+
+        /* PREDICTOR */
+        .predictor-box {
+            background: #fff; border: 1px solid #c8e6f5; border-radius: 16px;
+            padding: 32px; box-shadow: 0 2px 16px rgba(30,100,160,0.09);
+        }
+
+        /* TWO COLUMN LAYOUT */
+        .form-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+        .form-col {}
+
+        .sec-label {
+            font-size: 0.72rem; font-weight: 700; letter-spacing: 2px;
+            color: #1565a0; text-transform: uppercase;
+            background: #e0f0fc; padding: 5px 12px; border-radius: 6px;
+            display: inline-block; margin: 20px 0 14px;
+        }
+        .sec-label:first-child { margin-top: 0; }
+
+        .fields { display: flex; flex-direction: column; gap: 12px; }
+        .field { display: flex; flex-direction: column; gap: 5px; }
+        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        label { font-size: 0.8rem; color: #2a6a90; font-weight: 600; }
+        input, select {
+            padding: 10px 13px; border-radius: 8px;
+            border: 1.5px solid #c8e6f5; background: #f0f8fc;
+            color: #1a2a3a; font-size: 0.9rem; outline: none;
+            transition: border 0.2s, background 0.2s;
+        }
+        input:focus, select:focus { border-color: #1e90c0; background: #e0f4fc; }
+
+        .divider { height: 1px; background: #d8eef8; margin: 8px 0; }
+
+        .btn {
+            margin-top: 28px; width: 100%; padding: 15px;
+            background: linear-gradient(90deg, #1a6fa0, #2196c4);
+            border: none; border-radius: 10px; color: white;
+            font-size: 1rem; font-weight: 700; cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s; letter-spacing: 0.5px;
+        }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* RESULT */
+        .result {
+            margin-top: 24px; padding: 28px; border-radius: 14px;
+            background: linear-gradient(135deg, #ddf0fa, #c5e8f7);
+            border: 1.5px solid #7dd3f7; text-align: center; display: none;
+        }
+        .result-label { color: #2a6a90; font-size: 0.88rem; font-weight: 600; margin-bottom: 6px; }
+        .pce-value { font-size: 4rem; font-weight: 800; color: #1565a0; line-height: 1; }
+        .pce-unit  { color: #4a8aaa; font-size: 1rem; margin-top: 2px; }
+        .pce-note  { margin-top: 12px; color: #5a8aaa; font-size: 0.8rem; }
+
+        /* FOOTER */
+        footer {
+            text-align: center; padding: 24px;
+            color: #7aaabb; font-size: 0.8rem;
+            background: #d0eaf5; border-top: 1px solid #b8dff0;
+            margin-top: 60px;
+        }
+        footer strong { color: #1565a0; }
+    </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+    <h1>🌞 Perovskite <span>PCE</span> Predictor</h1>
+    <p>Predict Power Conversion Efficiency of perovskite solar cells using machine learning trained on real experimental data</p>
+    <div class="badges">
+        <span class="badge">🤖 Random Forest</span>
+        <span class="badge">R² = 0.87</span>
+        <span class="badge">MAE = 1.22%</span>
+        <span class="badge">13,361 Samples</span>
+        <span class="badge">NOMAD Database</span>
+    </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+    <a class="tab active" href="#about">About</a>
+    <a class="tab" href="#data">Data</a>
+    <a class="tab" href="#results">Results</a>
+    <a class="tab" href="#predict">Predict</a>
+</div>
+
+<!-- ABOUT -->
+<div class="section" id="about">
+    <h2>About Perovskite Solar Cells</h2>
+    <div class="about-grid">
+        <div class="about-text">
+            <p>Perovskite solar cells follow the <strong>ABX₃</strong> crystal structure — A is an organic/inorganic cation (MA, FA, Cs), B is a metal (Pb, Sn), and X is a halide (I, Br, Cl). Their efficiency has risen from 3.8% in 2009 to over 26% today.</p>
+            <p>This tool uses a <strong>Random Forest model</strong> trained on 13,361 real experimental records from the NOMAD database to predict PCE from composition and fabrication parameters — enabling virtual screening before costly lab work.</p>
+        </div>
+        <div class="diagram-box">
+            <img src="/static/perovskite.png" alt="Perovskite Solar Cell Structure">
+            <p>ABX₃ Perovskite Solar Cell Structure</p>
+        </div>
+    </div>
+    <div class="cards" style="margin-top:24px;">
+        <div class="card"><div class="icon">🔬</div><h3>ABX₃ Structure</h3><p>B-site metal controls bandgap and carrier mobility — strongest predictor of PCE</p></div>
+        <div class="card"><div class="icon">⚡</div><h3>Record Efficiency</h3><p>Lab PCE record >26%, rivalling silicon cells at a fraction of fabrication cost</p></div>
+        <div class="card"><div class="icon">🤖</div><h3>ML Screening</h3><p>Virtual screening of new compositions before synthesis — saves time and cost</p></div>
+    </div>
+</div>
+
+<!-- DATA -->
+<div class="section" id="data">
+    <h2>Data Source — NOMAD Repository</h2>
+    <div class="source-box">
+        <h3>Novel Materials Discovery (NOMAD) Laboratory — nomad-lab.eu</h3>
+        <p>All training data was fetched from the <strong>NOMAD Materials Database</strong>, an open-access repository containing 50,000+ experimental perovskite solar cell records from research groups worldwide. After physical validity filtering, <strong>13,361 high-quality records</strong> were used for training.</p>
+    </div>
+    <div class="stats" style="margin-top:20px;">
+        <div class="stat"><div class="num">44,870</div><div class="lbl">Raw Records Fetched</div></div>
+        <div class="stat"><div class="num">13,361</div><div class="lbl">Clean Training Samples</div></div>
+        <div class="stat"><div class="num">15</div><div class="lbl">Input Features</div></div>
+        <div class="stat"><div class="num">0.87</div><div class="lbl">R² Score</div></div>
+    </div>
+</div>
+
+<!-- RESULTS -->
+<div class="section" id="results">
+    <h2>Model Results & Analysis</h2>
+    <div class="plots">
+        <div class="plot-card">
+            <img src="/static/actual_vs_predicted.png" alt="Actual vs Predicted" onerror="this.parentElement.style.display='none'">
+            <div class="plot-caption">Actual vs Predicted PCE — R² = 0.87</div>
+        </div>
+        <div class="plot-card">
+            <img src="/static/feature_importance.png" alt="Feature Importance" onerror="this.parentElement.style.display='none'">
+            <div class="plot-caption">Feature Importance — B-Ion is strongest predictor</div>
+        </div>
+        <div class="plot-card">
+            <img src="/static/pce_distribution.png" alt="PCE Distribution" onerror="this.parentElement.style.display='none'">
+            <div class="plot-caption">PCE Distribution across 13,361 experimental records</div>
+        </div>
+        <div class="plot-card">
+            <img src="/static/pce_by_bion.png" alt="PCE by B-Ion" onerror="this.parentElement.style.display='none'">
+            <div class="plot-caption">Average PCE by B-Ion — Pb consistently highest</div>
+        </div>
+    </div>
+</div>
+
+<!-- PREDICT -->
+<div class="section" id="predict">
+    <h2>⚡ Predict PCE for New Composition</h2>
+    <div class="predictor-box">
+        <div class="form-layout">
+
+            <!-- LEFT COLUMN -->
+            <div class="form-col">
+                <div class="sec-label">Composition (ABX₃)</div>
+                <div class="fields">
+                    <div class="field">
+                        <label>B-Ion (Metal)</label>
+                        <select id="B_Ion">
+                            <option value="Pb">Pb — Lead</option>
+                            <option value="Sn">Sn — Tin</option>
+                            <option value="Bi">Bi — Bismuth</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>A-Ion (Cation)</label>
+                        <select id="A_Ion">
+                            <option value="MA">MA — Methylammonium</option>
+                            <option value="FA">FA — Formamidinium</option>
+                            <option value="Cs">Cs — Caesium</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>C-Ion (Halide)</label>
+                        <select id="C_Ion">
+                            <option value="I">I — Iodide</option>
+                            <option value="Br">Br — Bromide</option>
+                            <option value="Cl">Cl — Chloride</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="sec-label">Physical Properties</div>
+                <div class="fields">
+                    <div class="field-row">
+                        <div class="field"><label>Bandgap (eV)</label><input type="number" id="Bandgap" value="1.55" step="0.01" min="0.5" max="3.5"></div>
+                        <div class="field"><label>Cell Area (cm²)</label><input type="number" id="Cell_Area" value="0.1" step="0.01"></div>
+                    </div>
+                    <div class="field"><label>Anneal Temp (°C)</label><input type="number" id="Anneal_Temp" value="100" step="1"></div>
+                </div>
+
+                <div class="sec-label">Transport Layers</div>
+                <div class="fields">
+                    <div class="field">
+                        <label>HTL (Hole Transport Layer)</label>
+                        <select id="HTL">
+                            <option value="Spiro-MeOTAD">Spiro-MeOTAD</option>
+                            <option value="PEDOT:PSS">PEDOT:PSS</option>
+                            <option value="PTAA">PTAA</option>
+                            <option value="CuSCN">CuSCN</option>
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>ETL (Electron Transport Layer)</label>
+                        <select id="ETL">
+                            <option value="TiO2-c">TiO2-c</option>
+                            <option value="SnO2-c">SnO2-c</option>
+                            <option value="PCBM-60">PCBM-60</option>
+                            <option value="ZnO-np">ZnO-np</option>
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="form-col">
+                <div class="sec-label">Fabrication Conditions</div>
+                <div class="fields">
+                    <div class="field">
+                        <label>Backcontact</label>
+                        <select id="Backcontact">
+                            <option value="Au">Au — Gold</option>
+                            <option value="Ag">Ag — Silver</option>
+                            <option value="Al">Al — Aluminium</option>
+                            <option value="Carbon">Carbon</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Solvents</label>
+                        <select id="Solvents">
+                            <option value="DMF">DMF</option>
+                            <option value="DMSO">DMSO</option>
+                            <option value="GBL">GBL</option>
+                            <option value="DMF; DMSO">DMF + DMSO</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Synthesis Atmosphere</label>
+                        <select id="Synth_Atm">
+                            <option value="N2">N₂</option>
+                            <option value="Air">Air</option>
+                            <option value="Ar">Ar</option>
+                            <option value="Vacuum">Vacuum</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Deposition Procedure</label>
+                        <select id="Dep_Procedure">
+                            <option value="Spin-coating">Spin-coating</option>
+                            <option value="Co-evaporation">Co-evaporation</option>
+                            <option value="Evaporation">Evaporation</option>
+                        </select>
+                    </div>
+                    <div class="field-row">
+                        <div class="field">
+                            <label>Anti-Solvent Used?</label>
+                            <select id="AntiSolvent">
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Solvent Annealing?</label>
+                            <select id="Solv_Anneal">
+                                <option value="0">No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Is Module?</label>
+                        <select id="Is_Module">
+                            <option value="0">No — Single Cell</option>
+                            <option value="1">Yes — Module</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn" onclick="predict()">⚡ Predict Power Conversion Efficiency</button>
+
+        <div class="result" id="result">
+            <div class="result-label">Predicted Power Conversion Efficiency</div>
+            <div class="pce-value" id="pce_value">--</div>
+            <div class="pce-unit">%</div>
+            <div class="pce-note">Random Forest · R² = 0.87 · Trained on 13,361 real NOMAD records</div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <strong>Perovskite PCE Predictor</strong> &nbsp;·&nbsp;
+    Data Source: NOMAD Materials Repository (nomad-lab.eu) &nbsp;·&nbsp;
+    Random Forest Model · R² = 0.87 · 13,361 Experimental Records<br><br>
+    © 2026 <strong>Dayal</strong> · All Rights Reserved
+</footer>
+
+<script>
+    // Smooth scroll for tabs
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
+    async function predict() {
+        const btn = document.querySelector('.btn');
+        btn.innerText = 'Predicting...';
+        btn.disabled = true;
+
+        const data = {
+            B_Ion        : document.getElementById("B_Ion").value,
+            A_Ion        : document.getElementById("A_Ion").value,
+            C_Ion        : document.getElementById("C_Ion").value,
+            Bandgap      : document.getElementById("Bandgap").value,
+            Cell_Area    : document.getElementById("Cell_Area").value,
+            Anneal_Temp  : document.getElementById("Anneal_Temp").value,
+            HTL          : document.getElementById("HTL").value,
+            ETL          : document.getElementById("ETL").value,
+            Backcontact  : document.getElementById("Backcontact").value,
+            Solvents     : document.getElementById("Solvents").value,
+            Synth_Atm    : document.getElementById("Synth_Atm").value,
+            Dep_Procedure: document.getElementById("Dep_Procedure").value,
+            AntiSolvent  : document.getElementById("AntiSolvent").value,
+            Is_Module    : document.getElementById("Is_Module").value,
+            Solv_Anneal  : document.getElementById("Solv_Anneal").value,
+        };
+
+        try {
+            const resp = await fetch("/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+            const result = await resp.json();
+            document.getElementById("pce_value").innerText = result.pce;
+            document.getElementById("result").style.display = "block";
+            document.getElementById("result").scrollIntoView({ behavior: "smooth" });
+        } catch(e) {
+            alert("Prediction failed. Make sure Flask is running.");
+        }
+
+        btn.innerText = '⚡ Predict Power Conversion Efficiency';
+        btn.disabled = false;
+    }
+</script>
+</body>
+</html>
