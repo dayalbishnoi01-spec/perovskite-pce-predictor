@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, render_template
 import joblib
 import numpy as np
 
-app = Flask(__name__)
+
 app = Flask(__name__, static_folder="static")
 
 # Load model
