@@ -262,7 +262,42 @@
 
             <!-- LEFT COLUMN -->
             <div class="form-col">
-           <div class="sec-label">Composition (ABX₃)</div>
+           <div class="sec-label">Composition (ABX₃)</div> 
+                <div class="field" style="margin-bottom:16px;">
+    <label>Quick Select Composition</label>
+    <select onchange="fillComposition(this.value)">
+    <option value="">— Select preset or enter manually —</option>
+    <optgroup label="Pure Compositions">
+        <option value="MA">MAPbI₃</option>
+        <option value="FA">FAPbI₃</option>
+        <option value="Cs">CsPbI₃</option>
+    </optgroup>
+    <optgroup label="Mixed A-Ion (Cation)">
+        <option value="FAMA">FA₀.₈₅MA₀.₁₅PbI₃</option>
+        <option value="CsFAMA">Cs₀.₀₅FA₀.₇₉MA₀.₁₄PbI₂.₅₅Br₀.₄₅ — Triple Cation</option>
+        <option value="CsFA">Cs₀.₁₇FA₀.₈₃PbI₂.₈₃Br₀.₁₇</option>
+        <option value="CsMA">Cs₀.₁₅MA₀.₈₅PbI₃</option>
+    </optgroup>
+    <optgroup label="Bromide Based">
+        <option value="MAPbBr">MAPbBr₃</option>
+        <option value="FAPbBr">FAPbBr₃</option>
+        <option value="CsPbBr">CsPbBr₃</option>
+    </optgroup>
+    <optgroup label="Mixed Halide">
+        <option value="MAPbIBr">MAPbI₂Br</option>
+        <option value="FAPbIBr">FAPbI₂.₅₅Br₀.₄₅</option>
+    </optgroup>
+    <optgroup label="Tin Based">
+        <option value="MASnI">MASnI₃</option>
+        <option value="FASnI">FASnI₃</option>
+    </optgroup>
+    <optgroup label="Mixed Pb-Sn">
+        <option value="PbSn">FA₀.₇₅MA₀.₂₅Pb₀.₅Sn₀.₅I₃</option>
+        <option value="FAPbSnI">FAPb₀.₅Sn₀.₅I₃</option>
+    </optgroup>
+</select>
+        
+</div>
 <div class="fields">
 
     <!-- A-Ion Fractions -->
@@ -429,6 +464,39 @@
 </footer>
 
 <script>
+    function fillComposition(val) {
+        const presets = {
+            "MA"      : [0,    1.0,  0,    1.0, 0,   3.0, 0  ],
+            "FA"      : [1.0,  0,    0,    1.0, 0,   3.0, 0  ],
+            "Cs"      : [0,    0,    1.0,  1.0, 0,   3.0, 0  ],
+            "FAMA"    : [0.85, 0.15, 0,    1.0, 0,   3.0, 0  ],
+            "CsFAMA"  : [0.79, 0.14, 0.05, 1.0, 0,   2.55,0.45],
+            "CsFA"    : [0.83, 0,    0.17, 1.0, 0,   2.83,0.17],
+            "CsMA"    : [0,    0.85, 0.15, 1.0, 0,   3.0, 0  ],
+            "MAPbBr"  : [0,    1.0,  0,    1.0, 0,   0,   3.0],
+            "FAPbBr"  : [1.0,  0,    0,    1.0, 0,   0,   3.0],
+            "CsPbBr"  : [0,    0,    1.0,  1.0, 0,   0,   3.0],
+            "MAPbIBr" : [0,    1.0,  0,    1.0, 0,   2.0, 1.0],
+            "FAPbIBr" : [1.0,  0,    0,    1.0, 0,   2.55,0.45],
+            "MASnI"   : [0,    1.0,  0,    0,   1.0, 3.0, 0  ],
+            "FASnI"   : [1.0,  0,    0,    0,   1.0, 3.0, 0  ],
+            "PbSn"    : [0.75, 0.25, 0,    0.5, 0.5, 3.0, 0  ],
+            "FAPbSnI" : [1.0,  0,    0,    0.5, 0.5, 3.0, 0  ],
+        };
+        if (!val || !presets[val]) return;
+        const [fa,ma,cs,pb,sn,i,br] = presets[val];
+        document.getElementById("FA_frac").value = fa;
+        document.getElementById("MA_frac").value = ma;
+        document.getElementById("Cs_frac").value = cs;
+        document.getElementById("Pb_frac").value = pb;
+        document.getElementById("Sn_frac").value = sn;
+        document.getElementById("I_frac").value  = i;
+        document.getElementById("Br_frac").value = br;
+        const total = (fa+ma+cs).toFixed(2);
+        document.getElementById("a_total").innerText = total;
+        document.getElementById("a_total_label").style.color =
+            Math.abs(total-1.0) < 0.01 ? "#2e7d32" : "#e65100";
+    }
     document.querySelectorAll('.tab').forEach(tab => {
         tab.addEventListener('click', function(e) {
             e.preventDefault();
