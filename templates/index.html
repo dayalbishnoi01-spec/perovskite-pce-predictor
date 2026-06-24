@@ -262,37 +262,35 @@
 
             <!-- LEFT COLUMN -->
             <div class="form-col">
-                <div class="sec-label">Composition (ABX₃)</div>
-                <div class="fields">
-                    <div class="field">
-                        <label>B-Ion (Metal)</label>
-                        <select id="B_Ion">
-    <option value="Pb">Pb — Lead</option>
-    <option value="Sn">Sn — Tin</option>
-    <option value="Pb; Sn">Pb; Sn — Lead-Tin Mix</option>
-    <option value="Bi">Bi — Bismuth</option>
-</select>
-                    </div>
-                    <div class="field">
-                        <label>A-Ion (Cation)</label>
-                        <select id="A_Ion">
-                            <option value="MA">MA — Methylammonium</option>
-    <option value="FA">FA — Formamidinium</option>
-    <option value="Cs">Cs — Caesium</option>
-    <option value="FA; MA">FA; MA — Mixed</option>
-    <option value="Cs; FA; MA">Cs; FA; MA — Triple Cation</option>
-    <option value="Cs; FA">Cs; FA — Mixed</option>
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label>C-Ion (Halide)</label>
-                        <select id="C_Ion">
-                            <option value="I">I — Iodide</option>
-    <option value="Br">Br — Bromide</option>
-    <option value="Br; I">Br; I — Mixed</option>
-                        </select>
-                    </div>
-                </div>
+           <div class="sec-label">Composition (ABX₃)</div>
+<div class="fields">
+
+    <!-- A-Ion Fractions -->
+    <label style="color:#1565a0; font-size:0.85rem;">A-Ion Fractions (must add up to 1.0)</label>
+    <div class="field-row">
+        <div class="field"><label>FA (Formamidinium)</label><input type="number" id="FA_frac" value="0.85" step="0.01" min="0" max="1"></div>
+        <div class="field"><label>Cs (Caesium)</label><input type="number" id="Cs_frac" value="0.10" step="0.01" min="0" max="1"></div>
+    </div>
+    <div class="field-row">
+        <div class="field"><label>MA (Methylammonium)</label><input type="number" id="MA_frac" value="0.05" step="0.01" min="0" max="1"></div>
+        <div class="field"><label id="a_total_label" style="color:#e65100;">Total: <span id="a_total">1.00</span></label></div>
+    </div>
+
+    <!-- B-Ion Fractions -->
+    <label style="color:#1565a0; font-size:0.85rem; margin-top:8px;">B-Ion Fractions (must add up to 1.0)</label>
+    <div class="field-row">
+        <div class="field"><label>Pb (Lead)</label><input type="number" id="Pb_frac" value="1.0" step="0.01" min="0" max="1"></div>
+        <div class="field"><label>Sn (Tin)</label><input type="number" id="Sn_frac" value="0.0" step="0.01" min="0" max="1"></div>
+    </div>
+
+    <!-- C-Ion Fractions -->
+    <label style="color:#1565a0; font-size:0.85rem; margin-top:8px;">X-Ion Fractions (must add up to 3.0)</label>
+    <div class="field-row">
+        <div class="field"><label>I (Iodide)</label><input type="number" id="I_frac" value="2.55" step="0.01" min="0" max="3"></div>
+        <div class="field"><label>Br (Bromide)</label><input type="number" id="Br_frac" value="0.45" step="0.01" min="0" max="3"></div>
+    </div>
+
+</div>
 
                 <div class="sec-label">Physical Properties</div>
                 <div class="fields">
@@ -427,11 +425,10 @@
     <strong>Perovskite PCE Predictor</strong> &nbsp;·&nbsp;
     Data Source: NOMAD Materials Repository (nomad-lab.eu) &nbsp;·&nbsp;
     Random Forest Model · R² = 0.87 · 13,361 Experimental Records<br><br>
-    © 2026 <strong>sanskriti</strong> · All Rights Reserved
+    © 2026 <strong>RISHI LAB (IIT JODHPUR)</strong> · All Rights Reserved
 </footer>
 
 <script>
-    // Smooth scroll for tabs
     document.querySelectorAll('.tab').forEach(tab => {
         tab.addEventListener('click', function(e) {
             e.preventDefault();
@@ -448,9 +445,13 @@
         btn.disabled = true;
 
         const data = {
-            B_Ion        : document.getElementById("B_Ion").value,
-            A_Ion        : document.getElementById("A_Ion").value,
-            C_Ion        : document.getElementById("C_Ion").value,
+            FA_frac      : document.getElementById("FA_frac").value,
+            Cs_frac      : document.getElementById("Cs_frac").value,
+            MA_frac      : document.getElementById("MA_frac").value,
+            Pb_frac      : document.getElementById("Pb_frac").value,
+            Sn_frac      : document.getElementById("Sn_frac").value,
+            I_frac       : document.getElementById("I_frac").value,
+            Br_frac      : document.getElementById("Br_frac").value,
             Bandgap      : document.getElementById("Bandgap").value,
             Cell_Area    : document.getElementById("Cell_Area").value,
             Anneal_Temp  : document.getElementById("Anneal_Temp").value,
@@ -475,6 +476,8 @@
             document.getElementById("pce_value").innerText = result.pce;
             document.getElementById("result").style.display = "block";
             document.getElementById("result").scrollIntoView({ behavior: "smooth" });
+            document.querySelector(".pce-note").innerText =
+                `Composition: ${result.a_ion}Pb${result.b_ion}I · Random Forest · R² = 0.87`;
         } catch(e) {
             alert("Prediction failed. Make sure Flask is running.");
         }
@@ -482,6 +485,19 @@
         btn.innerText = '⚡ Predict Power Conversion Efficiency';
         btn.disabled = false;
     }
+
+    ["FA_frac","Cs_frac","MA_frac"].forEach(id => {
+        document.getElementById(id).addEventListener("input", () => {
+            const total = (
+                parseFloat(document.getElementById("FA_frac").value||0) +
+                parseFloat(document.getElementById("Cs_frac").value||0) +
+                parseFloat(document.getElementById("MA_frac").value||0)
+            ).toFixed(2);
+            document.getElementById("a_total").innerText = total;
+            document.getElementById("a_total_label").style.color =
+                Math.abs(total - 1.0) < 0.01 ? "#2e7d32" : "#e65100";
+        });
+    });
 </script>
 </body>
 </html>
