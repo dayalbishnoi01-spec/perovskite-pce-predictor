@@ -181,7 +181,7 @@
     <p>Predict Power Conversion Efficiency of perovskite solar cells using machine learning trained on real experimental data</p>
     <div class="badges">
         <span class="badge">🤖 Random Forest</span>
-        <span class="badge">R² = 0.87</span>
+        <span class="badge">R² = 0.85</span>
         <span class="badge">MAE = 1.22%</span>
         <span class="badge">13,361 Samples</span>
         <span class="badge">NOMAD Database</span>
@@ -227,7 +227,7 @@
         <div class="stat"><div class="num">44,870</div><div class="lbl">Raw Records Fetched</div></div>
         <div class="stat"><div class="num">13,361</div><div class="lbl">Clean Training Samples</div></div>
         <div class="stat"><div class="num">15</div><div class="lbl">Input Features</div></div>
-        <div class="stat"><div class="num">0.87</div><div class="lbl">R² Score</div></div>
+        <div class="stat"><div class="num">0.85</div><div class="lbl">R² Score</div></div>
     </div>
 </div>
 
@@ -237,7 +237,7 @@
     <div class="plots">
     <div class="plot-card">
         <img src="/static/actual_vs_predicted.png" alt="Actual vs Predicted" onerror="this.parentElement.style.display='none'">
-        <div class="plot-caption">Actual vs Predicted PCE — R² = 0.87</div>
+        <div class="plot-caption">Actual vs Predicted PCE — R² = 0.85</div>
     </div>
     <div class="plot-card">
         <img src="/static/pce_distribution.png" alt="PCE Distribution" onerror="this.parentElement.style.display='none'">
@@ -268,32 +268,32 @@
     <select onchange="fillComposition(this.value)">
     <option value="">— Select preset or enter manually —</option>
     <optgroup label="Pure Compositions">
-    <option value="MA">MAPbI3</option>
-    <option value="FA">FAPbI3</option>
-    <option value="Cs">CsPbI3</option>
+    <option value="MA">MAPbI₃</option>
+    <option value="FA">FAPbI₃</option>
+    <option value="Cs">CsPbI₃</option>
 </optgroup>
-<optgroup label="Mixed A-Ion">
-    <option value="FAMA">FA0.85 MA0.15 PbI3</option>
-    <option value="CsFAMA">Cs0.05 FA0.79 MA0.14 PbI2.55 Br0.45 — Triple Cation</option>
-    <option value="CsFA">Cs0.17 FA0.83 PbI2.83 Br0.17</option>
-    <option value="CsMA">Cs0.15 MA0.85 PbI3</option>
+<optgroup label="Mixed A-Ion (Cation)">
+    <option value="FAMA">FA₀.₈₅MA₀.₁₅PbI₃</option>
+    <option value="CsFAMA">Cs₀.₀₅FA₀.₇₉MA₀.₁₄PbI₂.₅₅Br₀.₄₅ — Triple Cation</option>
+    <option value="CsFA">Cs₀.₁₇FA₀.₈₃PbI₂.₈₃Br₀.₁₇</option>
+    <option value="CsMA">Cs₀.₁₅MA₀.₈₅PbI₃</option>
 </optgroup>
 <optgroup label="Bromide Based">
-    <option value="MAPbBr">MAPbBr3</option>
-    <option value="FAPbBr">FAPbBr3</option>
-    <option value="CsPbBr">CsPbBr3</option>
+    <option value="MAPbBr">MAPbBr₃</option>
+    <option value="FAPbBr">FAPbBr₃</option>
+    <option value="CsPbBr">CsPbBr₃</option>
 </optgroup>
 <optgroup label="Mixed Halide">
-    <option value="MAPbIBr">MAPbI2Br</option>
-    <option value="FAPbIBr">FAPbI2.55 Br0.45</option>
+    <option value="MAPbIBr">MAPbI₂Br</option>
+    <option value="FAPbIBr">FAPbI₂.₅₅Br₀.₄₅</option>
 </optgroup>
 <optgroup label="Tin Based">
-    <option value="MASnI">MASnI3</option>
-    <option value="FASnI">FASnI3</option>
+    <option value="MASnI">MASnI₃</option>
+    <option value="FASnI">FASnI₃</option>
 </optgroup>
 <optgroup label="Mixed Pb-Sn">
-    <option value="PbSn">FA0.75 MA0.25 Pb0.5 Sn0.5 I3</option>
-    <option value="FAPbSnI">FA Pb0.5 Sn0.5 I3</option>
+    <option value="PbSn">FA₀.₇₅MA₀.₂₅Pb₀.₅Sn₀.₅I₃</option>
+    <option value="FAPbSnI">FAPb₀.₅Sn₀.₅I₃</option>
 </optgroup>
        
 </select>
@@ -452,7 +452,7 @@
             <div class="result-label">Predicted Power Conversion Efficiency</div>
             <div class="pce-value" id="pce_value">--</div>
             <div class="pce-unit">%</div>
-            <div class="pce-note">Random Forest · R² = 0.87 · Trained on 13,361 real NOMAD records</div>
+            <div class="pce-note">Random Forest · R² = 0.85 · Trained on 13,361 real NOMAD records</div>
         </div>
     </div>
 </div>
@@ -460,7 +460,7 @@
 <footer>
     <strong>Perovskite PCE Predictor</strong> &nbsp;·&nbsp;
     Data Source: NOMAD Materials Repository (nomad-lab.eu) &nbsp;·&nbsp;
-    Random Forest Model · R² = 0.87 · 13,361 Experimental Records<br><br>
+    Random Forest Model · R² = 0.85 · 13,361 Experimental Records<br><br>
     © 2026 <strong>RISHI LAB (IIT JODHPUR)</strong> · All Rights Reserved
 </footer>
 
@@ -546,7 +546,7 @@
             document.getElementById("result").style.display = "block";
             document.getElementById("result").scrollIntoView({ behavior: "smooth" });
             document.querySelector(".pce-note").innerText =
-                `Composition: ${result.a_ion}Pb${result.b_ion}I · Random Forest · R² = 0.87`;
+                `Composition: ${result.a_ion}Pb${result.b_ion}I · Random Forest · R² = 0.85`;
         } catch(e) {
             alert("Prediction failed. Make sure Flask is running.");
         }
