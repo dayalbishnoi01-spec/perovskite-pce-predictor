@@ -99,16 +99,17 @@
             background: #fff; border: 1px solid #E5E4DF; border-radius: 10px;
             padding: 18px; text-align: center;
         }
-        .diagram-box img { width: 100%; border-radius: 6px; display: block; }
+        .diagram-box img { width: 100%; height: 220px; object-fit: cover; border-radius: 6px; display: block; filter: brightness(0.92) saturate(0.85); }
         .diagram-box p { font-size: 0.74rem; color: #AAAAA0; margin-top: 10px; letter-spacing: 0.02em; }
 
         /* PHOTO STRIP */
         .photo-strip {
             display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 10px;
-            margin-top: 28px; height: 170px;
+            margin: 28px 0 32px; height: 170px; overflow: hidden;
+            position: relative; clear: both;
         }
         .photo-strip img {
-            width: 100%; height: 100%; object-fit: cover; border-radius: 8px;
+            width: 100%; height: 170px; max-height: 170px; object-fit: cover; border-radius: 8px;
             filter: brightness(0.9) saturate(0.85); display: block;
         }
 
@@ -285,14 +286,14 @@
             <p>This tool uses a <strong>Random Forest model</strong> trained on 13,361 real experimental records from the NOMAD database to predict PCE from composition and fabrication parameters — enabling virtual screening before costly lab work.</p>
         </div>
         <div class="diagram-box">
-            <img src="/static/perovskite.png" alt="Perovskite Solar Cell Structure">
-            <p>ABX₃ Perovskite Solar Cell Structure</p>
+            <img src="/static/crystal-structure.webp" alt="ABX3 Perovskite Crystal Structure">
+            <p>ABX₃ Perovskite Crystal Lattice</p>
         </div>
     </div>
     <div class="photo-strip">
         <img src="/static/lab-research.webp" alt="Solar cell laboratory">
         <img src="/static/solar-cell-macro.webp" alt="Solar cell close-up">
-        <img src="/static/crystal-structure.webp" alt="Crystal structure">
+        <img src="/static/hero-solar.webp" alt="Solar panel field">
     </div>
     <div class="cards">
         <div class="card"><h3>ABX₃ Structure</h3><p>B-site metal controls bandgap and carrier mobility — strongest predictor of PCE</p></div>
