@@ -4,112 +4,173 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perovskite PCE Predictor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: #eaf4fb; color: #1a2a3a; }
+        body { font-family: 'DM Sans', sans-serif; background: #F7F6F3; color: #1A1A2E; }
 
-        /* HERO */
+        /* HERO — cinematic photo with gradient overlay */
         .hero {
-            background: linear-gradient(135deg, #0d3a5c 0%, #1565a0 60%, #1e90c8 100%);
-            padding: 56px 24px 48px;
-            text-align: center;
+            position: relative;
+            min-height: 360px;
+            display: flex;
+            align-items: flex-end;
+            background-image:
+                linear-gradient(to right, rgba(10,18,35,0.88) 40%, rgba(10,18,35,0.35) 100%),
+                url('/static/hero-solar.webp');
+            background-size: cover;
+            background-position: center 45%;
+            padding: 64px 48px 40px;
         }
-        .hero h1 { font-size: 2.2rem; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
-        .hero h1 span { color: #7dd3f7; }
-        .hero p { margin: 10px auto 0; color: #b0d8f0; font-size: 0.95rem; max-width: 520px; line-height: 1.6; }
-        .badges { margin-top: 18px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .hero-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .hero-eyebrow {
+            font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
+            color: rgba(255,255,255,0.55); margin-bottom: 12px; font-weight: 400;
+        }
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.6rem; font-weight: 700; color: #fff;
+            letter-spacing: -0.5px; line-height: 1.1;
+        }
+        .hero h1 span { font-style: italic; color: #A8C8E8; }
+        .hero p {
+            margin: 12px 0 0; color: rgba(255,255,255,0.65); font-size: 0.92rem;
+            max-width: 420px; line-height: 1.65; font-weight: 300;
+        }
+        .badges { margin-top: 0; display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
         .badge {
-            padding: 5px 16px; border-radius: 20px;
-            background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25);
-            color: #fff; font-size: 0.82rem; font-weight: 600;
+            font-size: 0.78rem; font-weight: 500; color: rgba(255,255,255,0.85);
+            display: flex; align-items: baseline; gap: 6px;
         }
+        .badge .badge-num { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: #fff; }
+
+        /* DARK INFO STRIP */
+        .infostrip {
+            background: #1A1A2E; display: flex; flex-wrap: wrap;
+            padding: 14px 48px; gap: 0;
+        }
+        .infostrip-item {
+            padding: 0 24px 0 0; margin-right: 24px;
+            border-right: 1px solid rgba(255,255,255,0.12);
+            font-size: 0.8rem;
+        }
+        .infostrip-item:last-child { border-right: none; }
+        .infostrip-item b { color: #A8C8E8; font-weight: 500; margin-right: 5px; }
+        .infostrip-item span { color: rgba(255,255,255,0.4); }
 
         /* NAV TABS */
         .tabs {
             display: flex; justify-content: center; gap: 0;
-            background: #fff; border-bottom: 2px solid #c8e6f5;
+            background: #fff; border-bottom: 1px solid #E5E4DF;
             position: sticky; top: 0; z-index: 100;
-            box-shadow: 0 2px 8px rgba(30,100,160,0.08);
         }
         .tab {
-            padding: 14px 28px; font-size: 0.88rem; font-weight: 600;
-            color: #5a8aaa; cursor: pointer; border-bottom: 3px solid transparent;
-            transition: all 0.2s; text-decoration: none;
+            padding: 16px 26px; font-size: 0.85rem; font-weight: 500;
+            color: #9a9a90; cursor: pointer; border-bottom: 2px solid transparent;
+            transition: all 0.2s; text-decoration: none; letter-spacing: 0.01em;
         }
-        .tab:hover { color: #1565a0; }
-        .tab.active { color: #1565a0; border-bottom-color: #1565a0; }
+        .tab:hover { color: #1A1A2E; }
+        .tab.active { color: #1A1A2E; border-bottom-color: #2E6EA6; }
 
         /* SECTIONS */
-        .section { max-width: 960px; margin: 44px auto; padding: 0 24px; }
+        .section { max-width: 1000px; margin: 48px auto; padding: 0 32px; }
         .section h2 {
-            font-size: 1.25rem; color: #1565a0; margin-bottom: 20px;
-            padding-bottom: 10px; border-bottom: 2px solid #c8e6f5;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem; font-weight: 700; color: #1A1A2E; margin-bottom: 24px;
         }
 
         /* ABOUT */
-        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
-        .about-text p { color: #3a5a70; line-height: 1.8; font-size: 0.93rem; margin-bottom: 10px; }
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+        .about-text p { color: #555550; line-height: 1.8; font-size: 0.93rem; margin-bottom: 14px; font-weight: 300; }
+        .about-text strong { color: #1A1A2E; font-weight: 500; }
 
         /* PEROVSKITE DIAGRAM */
         .diagram-box {
-            background: #fff; border: 1px solid #c8e6f5; border-radius: 16px;
-            padding: 20px; text-align: center;
-            box-shadow: 0 2px 12px rgba(30,100,160,0.08);
+            background: #fff; border: 1px solid #E5E4DF; border-radius: 10px;
+            padding: 18px; text-align: center;
         }
-        .diagram-box img { width: 100%; border-radius: 8px; }
-        .diagram-box p { font-size: 0.78rem; color: #7aaabb; margin-top: 10px; }
+        .diagram-box img { width: 100%; border-radius: 6px; display: block; }
+        .diagram-box p { font-size: 0.74rem; color: #AAAAA0; margin-top: 10px; letter-spacing: 0.02em; }
+
+        /* PHOTO STRIP */
+        .photo-strip {
+            display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 10px;
+            margin-top: 28px; height: 170px;
+        }
+        .photo-strip img {
+            width: 100%; height: 100%; object-fit: cover; border-radius: 8px;
+            filter: brightness(0.9) saturate(0.85); display: block;
+        }
 
         /* CARDS */
-        .cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-top: 20px; }
+        .cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-top: 24px; }
         .card {
-            background: #fff; border: 1px solid #c8e6f5; border-radius: 12px;
-            padding: 20px; text-align: center; box-shadow: 0 2px 8px rgba(30,100,160,0.06);
+            background: #fff; border: 1px solid #E5E4DF; border-radius: 8px;
+            padding: 20px;
         }
-        .card .icon { font-size: 1.8rem; margin-bottom: 8px; }
-        .card h3 { color: #1a4a6b; font-size: 0.9rem; margin-bottom: 5px; }
-        .card p { color: #5a7a8a; font-size: 0.8rem; line-height: 1.5; }
+        .card .icon { display: none; }
+        .card h3 { font-family: 'Playfair Display', serif; color: #1A1A2E; font-size: 0.98rem; margin-bottom: 6px; font-weight: 700; }
+        .card p { color: #8A8A80; font-size: 0.8rem; line-height: 1.55; font-weight: 300; }
 
         /* STATS */
         .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
         .stat {
-            background: #fff; border: 1px solid #c8e6f5; border-radius: 12px;
-            padding: 20px; text-align: center; box-shadow: 0 2px 8px rgba(30,100,160,0.06);
+            background: #fff; border: 1px solid #E5E4DF; border-radius: 8px;
+            padding: 20px; text-align: left;
         }
-        .stat .num { font-size: 1.8rem; font-weight: 800; color: #1565a0; }
-        .stat .lbl { font-size: 0.78rem; color: #7aaabb; margin-top: 4px; }
+        .stat .num { font-family: 'Playfair Display', serif; font-size: 1.7rem; font-weight: 700; color: #2E6EA6; }
+        .stat .lbl { font-size: 0.76rem; color: #AAAAA0; margin-top: 4px; }
 
         /* DATA SOURCE */
         .source-box {
-            background: #fff; border: 1px solid #c8e6f5; border-radius: 14px;
-            padding: 26px; box-shadow: 0 2px 12px rgba(30,100,160,0.07);
+            background: #fff; border: 1px solid #E5E4DF; border-radius: 10px;
+            padding: 28px;
         }
-        .source-box h3 { color: #1565a0; margin-bottom: 10px; }
-        .source-box p { color: #3a5a70; line-height: 1.8; font-size: 0.92rem; margin-bottom: 8px; }
+        .source-box h3 { font-family: 'Playfair Display', serif; color: #1A1A2E; margin-bottom: 12px; font-weight: 700; font-size: 1.1rem; }
+        .source-box p { color: #555550; line-height: 1.8; font-size: 0.92rem; margin-bottom: 8px; font-weight: 300; }
+        .source-box strong { color: #1A1A2E; font-weight: 500; }
+
+        /* DATA PHOTO */
+        .data-photo {
+            width: 100%; height: 160px; object-fit: cover; border-radius: 10px;
+            margin-top: 20px; filter: brightness(0.88) saturate(0.85); display: block;
+        }
 
         /* PLOTS */
         .plots { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
         .plot-card {
-            background: #fff; border: 1px solid #c8e6f5; border-radius: 14px;
-            overflow: hidden; box-shadow: 0 2px 10px rgba(30,100,160,0.07);
+            background: #fff; border: 1px solid #E5E4DF; border-radius: 10px;
+            overflow: hidden;
         }
         .plot-card img { width: 100%; display: block; }
-        .plot-caption { padding: 10px 14px; font-size: 0.8rem; color: #5a8aaa; background: #f5fbff; }
+        .plot-caption { padding: 12px 16px; font-size: 0.78rem; color: #8A8A80; background: #FBFAF8; font-weight: 400; }
 
         /* PREDICTOR */
         .predictor-box {
-            background: #fff; border: 1px solid #c8e6f5; border-radius: 16px;
-            padding: 32px; box-shadow: 0 2px 16px rgba(30,100,160,0.09);
+            background: #fff; border: 1px solid #E5E4DF; border-radius: 12px;
+            padding: 36px;
         }
 
         /* TWO COLUMN LAYOUT */
-        .form-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+        .form-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
         .form-col {}
 
         .sec-label {
-            font-size: 0.72rem; font-weight: 700; letter-spacing: 2px;
-            color: #1565a0; text-transform: uppercase;
-            background: #e0f0fc; padding: 5px 12px; border-radius: 6px;
-            display: inline-block; margin: 20px 0 14px;
+            font-size: 0.68rem; font-weight: 500; letter-spacing: 0.12em;
+            color: #AAAAA0; text-transform: uppercase;
+            background: none; padding: 0; border-radius: 0;
+            display: block; margin: 22px 0 12px;
+            padding-bottom: 8px; border-bottom: 1px solid #E5E4DF;
         }
         .sec-label:first-child { margin-top: 0; }
 
@@ -117,57 +178,65 @@
         .field { display: flex; flex-direction: column; gap: 5px; }
         .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-        label { font-size: 0.8rem; color: #2a6a90; font-weight: 600; }
+        label { font-size: 0.78rem; color: #666660; font-weight: 500; }
         input, select {
-            padding: 10px 13px; border-radius: 8px;
-            border: 1.5px solid #c8e6f5; background: #f0f8fc;
-            color: #1a2a3a; font-size: 0.9rem; outline: none;
-            transition: border 0.2s, background 0.2s;
+            padding: 9px 12px; border-radius: 5px;
+            border: 1px solid #DEDED8; background: #fff;
+            color: #1A1A2E; font-size: 0.88rem; outline: none;
+            font-family: 'DM Sans', sans-serif;
+            transition: border 0.2s;
         }
-        input:focus, select:focus { border-color: #1e90c0; background: #e0f4fc; }
+        input:focus, select:focus { border-color: #2E6EA6; }
 
-        .divider { height: 1px; background: #d8eef8; margin: 8px 0; }
+        .divider { height: 1px; background: #E5E4DF; margin: 8px 0; }
 
         .btn {
-            margin-top: 28px; width: 100%; padding: 15px;
-            background: linear-gradient(90deg, #1a6fa0, #2196c4);
-            border: none; border-radius: 10px; color: white;
-            font-size: 1rem; font-weight: 700; cursor: pointer;
-            transition: opacity 0.2s, transform 0.1s; letter-spacing: 0.5px;
+            margin-top: 28px; width: 100%; padding: 14px;
+            background: #1A1A2E;
+            border: none; border-radius: 6px; color: white;
+            font-size: 0.95rem; font-weight: 500; cursor: pointer;
+            transition: background 0.2s; letter-spacing: 0.02em;
+            font-family: 'DM Sans', sans-serif;
         }
-        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn:hover { background: #2E3A55; }
 
         /* RESULT */
         .result {
-            margin-top: 24px; padding: 28px; border-radius: 14px;
-            background: linear-gradient(135deg, #ddf0fa, #c5e8f7);
-            border: 1.5px solid #7dd3f7; text-align: center; display: none;
+            margin-top: 24px; padding: 28px; border-radius: 8px;
+            background: #fff;
+            border: 1px solid #C8D8E8; border-left: 3px solid #2E6EA6;
+            text-align: center; display: none;
         }
-        .result-label { color: #2a6a90; font-size: 0.88rem; font-weight: 600; margin-bottom: 6px; }
-        .pce-value { font-size: 4rem; font-weight: 800; color: #1565a0; line-height: 1; }
-        .pce-unit  { color: #4a8aaa; font-size: 1rem; margin-top: 2px; }
-        .pce-note  { margin-top: 12px; color: #5a8aaa; font-size: 0.8rem; }
+        .result-label { color: #8A8A80; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; margin-bottom: 8px; }
+        .pce-value { font-family: 'Playfair Display', serif; font-size: 3.6rem; font-weight: 700; color: #1A1A2E; line-height: 1; }
+        .pce-unit  { color: #8A8A80; font-size: 0.95rem; margin-top: 4px; }
+        .pce-note  { margin-top: 14px; color: #AAAAA0; font-size: 0.78rem; font-weight: 300; }
 
         /* FOOTER */
         footer {
-            text-align: center; padding: 24px;
-            color: #7aaabb; font-size: 0.8rem;
-            background: #d0eaf5; border-top: 1px solid #b8dff0;
-            margin-top: 60px;
+            text-align: center; padding: 28px;
+            color: #AAAAA0; font-size: 0.78rem;
+            background: #1A1A2E; border-top: none;
+            margin-top: 64px;
         }
-        footer strong { color: #1565a0; }
+        footer strong { color: #A8C8E8; font-weight: 500; }
         /* MOBILE */
 @media (max-width: 768px) {
-    .hero h1 { font-size: 1.5rem; }
+    .hero { padding: 40px 20px 28px; min-height: 280px; }
+    .hero h1 { font-size: 1.7rem; }
+    .hero-inner { flex-direction: column; align-items: flex-start; }
+    .badges { align-items: flex-start; flex-direction: row; flex-wrap: wrap; gap: 12px; }
+    .infostrip { padding: 12px 20px; }
     .tabs { overflow-x: auto; justify-content: flex-start; }
     .tab { padding: 12px 16px; font-size: 0.82rem; white-space: nowrap; }
     .about-grid { grid-template-columns: 1fr; }
+    .photo-strip { grid-template-columns: 1fr; height: auto; }
+    .photo-strip img { height: 130px; }
     .cards { grid-template-columns: 1fr; }
     .stats { grid-template-columns: 1fr 1fr; }
     .plots { grid-template-columns: 1fr; }
     .form-layout { grid-template-columns: 1fr; }
     .field-row { grid-template-columns: 1fr; }
-    .badges { flex-direction: column; align-items: center; }
     .predictor-box { padding: 18px; }
     .section { margin: 28px auto; }
 }
@@ -177,15 +246,26 @@
 
 <!-- HERO -->
 <div class="hero">
-    <h1>🌞 Perovskite <span>PCE</span> Predictor</h1>
-    <p>Predict Power Conversion Efficiency of perovskite solar cells using machine learning trained on real experimental data</p>
-    <div class="badges">
-        <span class="badge">🤖 Random Forest</span>
-        <span class="badge">R² = 0.85</span>
-        <span class="badge">MAE = 1.22%</span>
-        <span class="badge">13,361 Samples</span>
-        <span class="badge">NOMAD Database</span>
+    <div class="hero-inner">
+        <div>
+            <p class="hero-eyebrow">IIT Jodhpur · Department of Physics · RISHI Lab</p>
+            <h1>Perovskite <span>PCE</span> Predictor</h1>
+            <p>Predict power conversion efficiency of perovskite solar cells using machine learning trained on real experimental data</p>
+        </div>
+        <div class="badges">
+            <span class="badge"><span class="badge-num">0.85</span> R² Score</span>
+            <span class="badge"><span class="badge-num">1.22%</span> Mean Error</span>
+            <span class="badge"><span class="badge-num">13,361</span> Samples</span>
+        </div>
     </div>
+</div>
+
+<!-- INFO STRIP -->
+<div class="infostrip">
+    <span class="infostrip-item"><b>Random Forest</b><span>Algorithm</span></span>
+    <span class="infostrip-item"><b>scikit-learn</b><span>Framework</span></span>
+    <span class="infostrip-item"><b>NOMAD</b><span>Data Source</span></span>
+    <span class="infostrip-item"><b>ABX₃</b><span>Crystal Structure</span></span>
 </div>
 
 <!-- TABS -->
@@ -209,10 +289,15 @@
             <p>ABX₃ Perovskite Solar Cell Structure</p>
         </div>
     </div>
-    <div class="cards" style="margin-top:24px;">
-        <div class="card"><div class="icon">🔬</div><h3>ABX₃ Structure</h3><p>B-site metal controls bandgap and carrier mobility — strongest predictor of PCE</p></div>
-        <div class="card"><div class="icon">⚡</div><h3>Record Efficiency</h3><p>Lab PCE record >26%, rivalling silicon cells at a fraction of fabrication cost</p></div>
-        <div class="card"><div class="icon">🤖</div><h3>ML Screening</h3><p>Virtual screening of new compositions before synthesis — saves time and cost</p></div>
+    <div class="photo-strip">
+        <img src="/static/lab-research.webp" alt="Solar cell laboratory">
+        <img src="/static/solar-cell-macro.webp" alt="Solar cell close-up">
+        <img src="/static/crystal-structure.webp" alt="Crystal structure">
+    </div>
+    <div class="cards">
+        <div class="card"><h3>ABX₃ Structure</h3><p>B-site metal controls bandgap and carrier mobility — strongest predictor of PCE</p></div>
+        <div class="card"><h3>Record Efficiency</h3><p>Lab PCE record &gt;26%, rivalling silicon cells at a fraction of fabrication cost</p></div>
+        <div class="card"><h3>ML Screening</h3><p>Virtual screening of new compositions before synthesis — saves time and cost</p></div>
     </div>
 </div>
 
@@ -229,6 +314,7 @@
         <div class="stat"><div class="num">15</div><div class="lbl">Input Features</div></div>
         <div class="stat"><div class="num">0.85</div><div class="lbl">R² Score</div></div>
     </div>
+    <img class="data-photo" src="/static/data-photo.webp" alt="Materials research">
 </div>
 
 <!-- RESULTS -->
@@ -243,20 +329,12 @@
         <img src="/static/pce_distribution.png" alt="PCE Distribution" onerror="this.parentElement.style.display='none'">
         <div class="plot-caption">PCE Distribution across 13,361 experimental records</div>
     </div>
-    <div class="plot-card">
-        <img src="/static/pce_by_htl.png" alt="PCE by HTL" onerror="this.parentElement.style.display='none'">
-        <div class="plot-caption">Average PCE by HTL — Spiro-OMeTAD gives highest efficiency</div>
-    </div>
-    <div class="plot-card">
-        <img src="/static/pce_by_etl.png" alt="PCE by ETL" onerror="this.parentElement.style.display='none'">
-        <div class="plot-caption">Average PCE by ETL — SnO2-c consistently outperforms others</div>
-        </div>
     </div>
 </div>
 
 <!-- PREDICT -->
 <div class="section" id="predict">
-    <h2>⚡ Predict PCE for New Composition</h2>
+    <h2>Predict PCE for New Composition</h2>
     <div class="predictor-box">
         <div class="form-layout">
 
@@ -446,7 +524,7 @@
             </div>
         </div>
 
-        <button class="btn" onclick="predict()">⚡ Predict Power Conversion Efficiency</button>
+        <button class="btn" onclick="predict()">Predict Power Conversion Efficiency</button>
 
         <div class="result" id="result">
             <div class="result-label">Predicted Power Conversion Efficiency</div>
@@ -551,7 +629,7 @@
             alert("Prediction failed. Make sure Flask is running.");
         }
 
-        btn.innerText = '⚡ Predict Power Conversion Efficiency';
+        btn.innerText = 'Predict Power Conversion Efficiency';
         btn.disabled = false;
     }
 
